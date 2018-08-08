@@ -38,25 +38,24 @@ setup () {
     scope full
     prerequisites_ok lammps
     multiprocess_ok
-    IMG=$IMGDIR/lammps
 }
 
 lammps_try () {
     # These examples cd because some (not all) of the LAMMPS tests expect to
     # find things based on $CWD.
-    infiles=$(ch-run --cd "/lammps/examples/$1" "$IMG" -- bash -c "ls in.*")
+    infiles=$(ch-run --cd "/lammps/examples/$1" "$ch_img" -- bash -c "ls in.*")
     for i in $infiles; do
         printf '\n\n%s\n' "$i"
         # shellcheck disable=SC2086
-        $MPIRUN_CORE ch-run --join --cd /lammps/examples/$1 "$IMG" -- \
+        $mpirun_core ch-run --join --cd /lammps/examples/$1 "$ch_img" -- \
                             lmp_mpi -log none -in "$i"
     done
 
 }
 
-@test "$EXAMPLE_TAG/using all cores" {
+@test "$ch_tag/using all cores" {
     # shellcheck disable=SC2086
-    run $MPIRUN_CORE ch-run --join "$IMG" -- \
+    run $mpirun_core ch-run --join "$ch_img" -- \
                             lmp_mpi -log none -in /lammps/examples/melt/in.melt
     echo "$output"
     [[ $status -eq 0 ]]
@@ -69,11 +68,11 @@ lammps_try () {
     [[ $ranks_found -eq "$CHTEST_CORES_TOTAL" ]]
 }
 
-@test "$EXAMPLE_TAG/crack"    { lammps_try crack; }
-@test "$EXAMPLE_TAG/dipole"   { lammps_try dipole; }
-@test "$EXAMPLE_TAG/flow"     { lammps_try flow; }
-@test "$EXAMPLE_TAG/friction" { lammps_try friction; }
-@test "$EXAMPLE_TAG/melt"     { lammps_try melt; }
+@test "$ch_tag/crack"    { lammps_try crack; }
+@test "$ch_tag/dipole"   { lammps_try dipole; }
+@test "$ch_tag/flow"     { lammps_try flow; }
+@test "$ch_tag/friction" { lammps_try friction; }
+@test "$ch_tag/melt"     { lammps_try melt; }
 
 # This test busy-hangs after several:
 #
@@ -82,5 +81,5 @@ lammps_try () {
 #
 # Perhaps related to --join?
 #
-@test "$EXAMPLE_TAG/python"   { skip 'incompatible with --join'
+@test "$ch_tag/python"   { skip 'incompatible with --join'
                                 lammps_try python; }

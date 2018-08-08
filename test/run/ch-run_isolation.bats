@@ -4,7 +4,7 @@ load ../common
     scope quick
     host_ns=$(stat -Lc '%i' /proc/self/ns/mnt)
     echo "host:  $host_ns"
-    guest_ns=$(ch-run "$CHTEST_IMG" -- stat -Lc %i /proc/self/ns/mnt)
+    guest_ns=$(ch-run "$ch_chtest_img" -- stat -Lc %i /proc/self/ns/mnt)
     echo "guest: $guest_ns"
     [[ -n $host_ns && -n $guest_ns && $host_ns -ne $guest_ns ]]
 }
@@ -13,7 +13,7 @@ load ../common
     scope quick
     host_ns=$(stat -Lc '%i' /proc/self/ns/user)
     echo "host:  $host_userns"
-    guest_ns=$(ch-run "$CHTEST_IMG" -- stat -Lc %i /proc/self/ns/user)
+    guest_ns=$(ch-run "$ch_chtest_img" -- stat -Lc %i /proc/self/ns/user)
     echo "guest: $guest_ns"
     [[ -n $host_ns && -n $guest_ns && $host_ns -ne $guest_ns ]]
 }
@@ -31,7 +31,7 @@ load ../common
     if [[ $host_distro = "$guest_expected" ]]; then
         skip 'host matches expected guest distro'
     fi
-    guest_distro=$(ch-run "$CHTEST_IMG" -- \
+    guest_distro=$(ch-run "$ch_chtest_img" -- \
                           cat /etc/os-release \
                    | grep -F PRETTY_NAME \
                    | sed -r 's/^(.*")?(.+)(")$/\2/')
@@ -43,15 +43,15 @@ load ../common
 @test 'user and group match host' {
     scope quick
     host_uid=$(id -u)
-    guest_uid=$(ch-run "$CHTEST_IMG" -- id -u)
+    guest_uid=$(ch-run "$ch_chtest_img" -- id -u)
     [[ $host_uid = "$guest_uid" ]]
     host_pgid=$(id -g)
-    guest_pgid=$(ch-run "$CHTEST_IMG" -- id -g)
+    guest_pgid=$(ch-run "$ch_chtest_img" -- id -g)
     [[ $host_pgid = "$guest_pgid" ]]
     host_username=$(id -un)
-    guest_username=$(ch-run "$CHTEST_IMG" -- id -un)
+    guest_username=$(ch-run "$ch_chtest_img" -- id -un)
     [[ $host_username = "$guest_username" ]]
     host_pgroup=$(id -gn)
-    guest_pgroup=$(ch-run "$CHTEST_IMG" -- id -gn)
+    guest_pgroup=$(ch-run "$ch_chtest_img" -- id -gn)
     [[ $host_pgroup = "$guest_pgroup" ]]
 }
